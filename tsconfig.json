@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "types": ["connect"],
+    "typeRoots": ["node_modules/@types"],
     "sourceMap": true,
     "outDir": "build",
     "strict": true,
