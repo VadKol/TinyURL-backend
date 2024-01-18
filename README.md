@@ -1,1 +1,3 @@
-# TinyURL-backend
+#Tiny URL (backend)
+
+npm run dev
