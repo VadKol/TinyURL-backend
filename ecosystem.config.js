@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-undef
 module.exports = {
   apps : [{
-    name: "url-shortener-song",
+    name: "tinyurl",
     script: 'dist/index.js',
     exec_mode: 'cluster',
     instances: 4,
