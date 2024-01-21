@@ -1,11 +1,19 @@
-import './db';
-import createApp from './app';
-import config from './config';
-import Logger from './utils/logger';
-import type { Application } from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import express from 'express';
 
-const app: Application = createApp();
+import UrlRoutes from './routers/UrlRouters';
+import { startServer } from './startMongooseFunc/startServer';
 
-app.listen(config.port, (): void => {
-  Logger.info(`Server running on port ${config.port}`);
-});
+dotenv.config();
+
+export const app = express();
+
+app.use(cors());
+app.use(express.json());
+
+app.use('/tinyurl', UrlRoutes);
+
+startServer();
+
+export default app;
