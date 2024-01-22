@@ -88,13 +88,13 @@ export const inputLongUrl = async (req: Request, res: Response) => {
 
 export const deleteShortUrl = async (req: Request, res: Response) => {
   try {
-    const { urlId } = req.params;
+    const { urlCode } = req.params;
 
-    if (!urlId.match(/^[0-9a-fA-F]{24}$/)) {
+    if (!urlCode.match(/^[0-9a-fA-F]{24}$/)) {
       return res.status(400).json('Invalid URL ID');
     }
 
-    const url = await Url.findById(urlId);
+    const url = await Url.findById(urlCode);
 
     if (url) {
       await url.deleteOne();
