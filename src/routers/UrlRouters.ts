@@ -5,15 +5,17 @@ import {
   getAllUrls,
   getShortenUrl,
   inputLongUrl,
-} from '../controllers/UrlController';
-import healthCheck from '../middleware/healthCheck';
+  redirectToLongUrl,
+} from '../controllers/UrlControllers';
+import healthCheck from '../middlewares/healthCheck';
 
 const router: Router = express.Router();
 
 router.get('/', getAllUrls);
 router.get('/:urlCode', getShortenUrl);
+router.get('/redirect/:urlCode', redirectToLongUrl);
 router.post('/create', createShortUrl);
-router.post('/long-url', inputLongUrl);
+router.post('/longUrl', inputLongUrl);
 router.delete('/:urlCode', deleteShortUrl);
 
 router.get('/healthcheck', healthCheck);

@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
-import UrlModel from '../types/UrlType';
+import UrlType from '../types/UrlType';
 
 export const UrlSchema: Schema = new Schema({
   urlCode: String,
@@ -8,4 +8,4 @@ export const UrlSchema: Schema = new Schema({
   date: { type: String, default: Date.now },
 });
 
-export default mongoose.model<UrlModel>('Url', UrlSchema);
+export default mongoose.model<UrlType>('UrlModel', UrlSchema);

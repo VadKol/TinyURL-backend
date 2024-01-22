@@ -1,12 +1,12 @@
 import config from 'config';
 import { Request, Response } from 'express';
 import validUrl from 'valid-url';
-import Url from '../models/UrlModel';
+import UrlModel from '../models/UrlModel';
 import { isUrlCodeExists } from '../utils/isUrlCodeExists';
 
 export const getAllUrls = async (req: Request, res: Response) => {
   try {
-    const urls = await Url.find();
+    const urls = await UrlModel.find();
     res.json(urls);
   } catch (error) {
     res.status(500).json({ error: 'Failed to get superheroes' });
@@ -15,13 +15,11 @@ export const getAllUrls = async (req: Request, res: Response) => {
 
 export const getShortenUrl = async (req: Request, res: Response) => {
   try {
-    const urlObject = await Url.findOne({ urlCode: req.params.urlCode });
+    const urlObject = await UrlModel.findOne({ urlCode: req.params.urlCode });
 
-    if (urlObject) {
-      return res.redirect(urlObject.longUrl);
-    } else {
-      return res.status(404).json('No url found!');
-    }
+    return urlObject
+      ? res.redirect(urlObject.longUrl)
+      : res.status(404).json('No url found!');
   } catch (err) {
     console.error(err);
     res.status(500).json('Server error');
@@ -33,20 +31,20 @@ export const createShortUrl = async (req: Request, res: Response) => {
   const baseUrl = config.get('baseUrl');
 
   if (!validUrl.isUri(baseUrl as string)) {
-    return res.status(401).json('invalid base url!');
+    return res.status(401).json('Invalid base URL!');
   }
 
   if (validUrl.isUri(longUrl)) {
     try {
-      let url = await Url.findOne({ longUrl });
+      let url = await UrlModel.findOne({ longUrl });
 
       if (url) {
-        res.json(url);
+        return res.json(url);
       } else {
         const urlCode = await isUrlCodeExists();
-        const shortUrl = baseUrl + '/' + urlCode;
+        const shortUrl = 'https://' + urlCode;
 
-        url = new Url({
+        url = new UrlModel({
           longUrl,
           shortUrl,
           urlCode,
@@ -61,7 +59,24 @@ export const createShortUrl = async (req: Request, res: Response) => {
       res.status(500).json('Server error');
     }
   } else {
-    res.status(401).json('Invalid long url');
+    res.status(401).json('Invalid long URL');
+  }
+};
+
+export const redirectToLongUrl = async (req: Request, res: Response) => {
+  const { urlCode } = req.params;
+
+  try {
+    const url = await UrlModel.findOne({ urlCode });
+
+    if (url) {
+      return res.redirect(url.longUrl);
+    } else {
+      res.status(404).json('URL not found');
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json('Server error');
   }
 };
 
@@ -70,13 +85,11 @@ export const inputLongUrl = async (req: Request, res: Response) => {
 
   if (validUrl.isUri(shortUrl)) {
     try {
-      const url = await Url.findOne({ shortUrl });
+      const url = await UrlModel.findOne({ shortUrl });
 
-      if (url) {
-        res.json(url);
-      } else {
-        res.status(404).json('No url found');
-      }
+      return url
+        ? res.json(url)
+        : res.status(404).json('No url found');
     } catch (err) {
       console.error(err);
       res.status(500).json('Server error');
@@ -94,7 +107,7 @@ export const deleteShortUrl = async (req: Request, res: Response) => {
       return res.status(400).json('Invalid URL ID');
     }
 
-    const url = await Url.findById(urlCode);
+    const url = await UrlModel.findById(urlCode);
 
     if (url) {
       await url.deleteOne();

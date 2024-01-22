@@ -1,6 +1,6 @@
 import { Document } from 'mongoose';
 
-export default interface UrlModel extends Document {
+export default interface UrlType extends Document {
   urlCode: string;
   longUrl: string;
   shortUrl: string;
