@@ -1,5 +1,6 @@
 import mongoose, { ConnectOptions } from 'mongoose';
 import { app } from '..';
+import { deleteExpiredUrls } from '../utils/deleteExpiredUrls';
 
 export const startServer = () => {
   const port = process.env.PORT;
@@ -24,3 +25,5 @@ export const startServer = () => {
       console.log('Failed connecting to MongoDB:', error);
     });
 };
+
+setInterval(deleteExpiredUrls, 24 * 60 * 60 * 1000);

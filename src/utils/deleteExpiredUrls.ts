@@ -10,5 +10,3 @@ export const deleteExpiredUrls = async () => {
     console.error(err);
   }
 };
-
-setInterval(deleteExpiredUrls, 24 * 60 * 60 * 1000);
